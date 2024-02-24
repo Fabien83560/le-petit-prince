@@ -6,7 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-modal [isOpen]="!userConnected">
+<ion-modal [isOpen]="!userConnected" [backdropDismiss]="false">
   <ng-template>
     <ion-header>
       <ion-toolbar>
@@ -27,6 +27,9 @@
             <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
             <ion-input type="password" [(ngModel)]="loginData.password" name="password" placeholder="password" required></ion-input>
           </ion-item>
+          <ion-text color="danger" *ngIf="loginError" class="login-error-message">
+            <p>{{ loginErrorMessage }}</p>
+          </ion-text>          
           <ion-item class="remember" lines="none">
             <ion-label>Se souvenir de moi</ion-label>
             <ion-checkbox slot="start" class="small-checkbox" (ionChange)="rememberMe()" [checked]="rememberLogin"></ion-checkbox>
