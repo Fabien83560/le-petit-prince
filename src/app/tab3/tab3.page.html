@@ -27,6 +27,10 @@
             <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
             <ion-input type="password" [(ngModel)]="loginData.password" name="password" placeholder="password" required></ion-input>
           </ion-item>
+          <ion-item class="remember" lines="none">
+            <ion-label>Se souvenir de moi</ion-label>
+            <ion-checkbox slot="start" class="small-checkbox" (ionChange)="rememberMe()" [checked]="rememberLogin"></ion-checkbox>
+          </ion-item>                  
           <ion-button expand="block" (click)="tryConnexion()" [disabled]="!loginData.username || !loginData.password" type="submit" class="login-button">Se Connecter</ion-button>
         </form>               
         <ion-text color="medium">
