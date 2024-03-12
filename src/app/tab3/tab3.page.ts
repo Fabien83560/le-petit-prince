@@ -46,7 +46,7 @@ export class Tab3Page implements OnInit {
   }
 
   async tryConnexion() {
-    const url = `http://www.sebastien-thon.fr/prince/index.php?connexion&login=${encodeURIComponent(this.loginData.username)}&mdp=${encodeURIComponent(this.loginData.password)}`;
+    const url = `https://sebastien-thon.fr/prince/index.php?connexion&login=${encodeURIComponent(this.loginData.username)}&mdp=${encodeURIComponent(this.loginData.password)}`;
 
     try {
       const response = await fetch(url);
@@ -59,7 +59,6 @@ export class Tab3Page implements OnInit {
         this.userConnected = true;
         this.loginError = false;
         this.loginErrorMessage = '';
-
         if(this.rememberLogin) {
           await Preferences.set({
             key: 'rememberUsername',
@@ -80,6 +79,8 @@ export class Tab3Page implements OnInit {
             value: JSON.stringify(""),
           });
         }
+        this.saveConnectedUser();
+        this.fetchAllInformations();
       } else if (data.erreur) {
         this.loginError = true;
         this.loginErrorMessage = "Votre identifiant ou mot de passe est incorrect";
@@ -96,6 +97,31 @@ export class Tab3Page implements OnInit {
       key: 'rememberLogin',
       value: JSON.stringify(this.rememberLogin),
     });
+  }
+
+  async saveConnectedUser() {
+    await Preferences.set({
+      key: 'usernameConnected',
+      value: JSON.stringify(this.loginData.username),
+    });
+    await Preferences.set({
+      key: 'passwordConnected',
+      value: JSON.stringify(this.loginData.password),
+    });
+  }
+
+  async fetchAllInformations() {
+    fetch(`https://sebastien-thon.fr/prince/index.php?login=${this.loginData.username}&mdp=${this.loginData.password}`).then(async response => {
+      if (response.ok) {
+        const data = await response.json();
+        await Preferences.set({
+          key: 'data',
+          value: JSON.stringify(data),
+        })
+      }
+    }).catch(e => {
+      console.log(e);
+    })
   }
 
   canDismissModal = () => {

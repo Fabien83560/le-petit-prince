@@ -1,8 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Articles
-    </ion-title>
+    <ion-title>Articles</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -12,5 +10,46 @@
       <ion-title size="large">Articles</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-searchbar [(ngModel)]="searchQuery" (ionChange)="onSearchChange($event)" animated="true" placeholder="Rechercher"></ion-searchbar>
+  <ion-list *ngIf="filteredArticles">
+    <ion-item *ngFor="let article of filteredArticles" (click)="setOpen(true, article)">
+      <ion-label>
+        <h2><b><u>{{ article.titre }}</u></b></h2>
+        <h3>Date: {{ article.date | date:'medium' }}</h3>
+        <h3>Category: {{ article.categorie }}</h3>
+        <h3 *ngIf="article.important" style="color: red;">IMPORTANT</h3>
+      </ion-label>
+      <h2>
+        <ion-icon name="star" (click)="$event.stopPropagation(); toggleFavorite(article)" [color]="article.isFavorite ? 'warning' : 'medium'"></ion-icon>
+      </h2>
+    </ion-item>
+  </ion-list>
 
+  <ion-modal [isOpen]="isModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ currentArticle.title }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="setOpen(false, '')">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <div class="article-content">
+          <h2 style="text-align: center;"><b><u>{{ currentArticle.titre }}</u></b></h2>
+          <h5>Published on {{ currentArticle.date | date:'medium' }}</h5>
+          <h5>Category: {{ currentArticle.categorie }}</h5>
+          <h5 *ngIf="currentArticle.important" style="color: red;">IMPORTANT</h5>
+          <p>{{ currentArticle.texte }}</p>
+          <div *ngIf="currentArticle.photos" style="list-style: none;">
+            <div *ngFor="let photo of currentArticle.photos">
+              <img src="https://sebastien-thon.fr/prince/images/{{ photo.image }}?login={{ loginData.username }}&mdp={{ loginData.password }}" style="width: 70%; display: block; margin: auto;"/>
+              <p style="text-align: center;">{{ photo.legende }}</p>
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>
