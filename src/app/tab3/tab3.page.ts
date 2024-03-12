@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { Preferences } from '@capacitor/preferences';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonModal, IonItem, IonLabel, IonInput, IonCheckbox,
-         IonButton, IonIcon, IonText } from '@ionic/angular/standalone';
+         IonButton, IonIcon, IonText, IonButtons } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { person, personSharp, personOutline, lockClosed, lockClosedSharp, lockClosedOutline } from 'ionicons/icons';
 
@@ -13,11 +13,12 @@ import { person, personSharp, personOutline, lockClosed, lockClosedSharp, lockCl
   styleUrls: ['tab3.page.scss'],
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, NgIf, IonHeader, IonToolbar, IonTitle, IonContent, IonModal, IonItem, IonLabel, IonInput, IonCheckbox,
-            IonButton, IonIcon, IonText],
+            IonButton, IonIcon, IonText, IonButtons],
 })
 
 export class Tab3Page implements OnInit {
   userConnected: boolean = false;
+  tutorialModal: boolean = false;
 
   loginError: boolean = false;
   loginErrorMessage: string = '';
@@ -110,7 +111,7 @@ export class Tab3Page implements OnInit {
     });
   }
 
-  async fetchAllInformations() {
+  fetchAllInformations() {
     fetch(`https://sebastien-thon.fr/prince/index.php?login=${this.loginData.username}&mdp=${this.loginData.password}`).then(async response => {
       if (response.ok) {
         const data = await response.json();
@@ -127,4 +128,9 @@ export class Tab3Page implements OnInit {
   canDismissModal = () => {
     return !this.userConnected;
   };
+
+  setOpen(isOpen: boolean) {
+    this.tutorialModal = isOpen;
+  }
+
 }

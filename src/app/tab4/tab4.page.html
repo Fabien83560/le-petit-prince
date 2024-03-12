@@ -12,7 +12,19 @@
       <ion-title size="large">Dates</ion-title>
     </ion-toolbar>
   </ion-header>
-
-  <ion-input type="text" [(ngModel)]="loginData.password" name="username"></ion-input>
+  <ion-refresher slot="fixed" (ionRefresh)="fetchAllInformations($event)">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-list *ngIf="dates">
+    <ion-item *ngFor="let date of dates">
+      <ion-label>
+        <h2><b><u>{{ date.titre }}</u></b></h2>
+        <h3>Date: {{ date.date | date:'medium' }}</h3>
+        <h3>Classe {{date.classe}}</h3>
+        <h3>{{date.texte}}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 
 </ion-content>

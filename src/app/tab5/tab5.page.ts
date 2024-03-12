@@ -1,15 +1,18 @@
 import { Component } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
-
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {school, schoolOutline, schoolSharp, location, locationOutline, locationSharp, call, callOutline, callSharp, mail, mailOutline, mailSharp} from 'ionicons/icons';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonList, IonItem, IonIcon, IonLabel,
+         IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-tab5',
   templateUrl: 'tab5.page.html',
   styleUrls: ['tab5.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, FormsModule, ReactiveFormsModule]
+  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, FormsModule, ReactiveFormsModule,
+            IonList, IonItem, IonIcon, IonLabel, IonRefresher, IonRefresherContent]
 })
 export class Tab5Page {
   loginData = {
@@ -18,6 +21,7 @@ export class Tab5Page {
   };
 
   constructor() {
+    addIcons({school, schoolOutline, schoolSharp, location, locationOutline, locationSharp, call, callOutline, callSharp, mail, mailOutline, mailSharp});
     this.loadInformation();
   }
 
@@ -28,4 +32,20 @@ export class Tab5Page {
     this.loginData.username = username.value ? JSON.parse(username.value) : '';
     this.loginData.password = password.value ? JSON.parse(password.value) : '';
   }
+
+  fetchAllInformations(event: any) {
+    fetch(`https://sebastien-thon.fr/prince/index.php?login=${this.loginData.username}&mdp=${this.loginData.password}`).then(async response => {
+      if (response.ok) {
+        const data = await response.json();
+        await Preferences.set({
+          key: 'data',
+          value: JSON.stringify(data),
+        })
+        event.target.complete()
+      }
+    }).catch(e => {
+      console.log(e);
+    })
+  }
+
 }

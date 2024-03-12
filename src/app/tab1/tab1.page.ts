@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { star } from 'ionicons/icons';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonList, IonItem, IonLabel, IonModal,
-         IonButton, IonButtons, IonSearchbar, IonIcon, IonToggle } from '@ionic/angular/standalone';
+         IonButton, IonButtons, IonSearchbar, IonIcon, IonToggle, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-tab1',
@@ -14,7 +14,7 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonInput, IonList, IonItem
   standalone: true,
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonInput, FormsModule, ReactiveFormsModule, IonList,
             IonItem, IonLabel, NgIf, NgFor, NgForOf, DatePipe, IonModal, IonButton, IonButtons, IonSearchbar,
-            IonIcon, IonToggle]
+            IonIcon, IonToggle, IonRefresher, IonRefresherContent]
 })
 export class Tab1Page {
   articles: any[] = [];
@@ -54,6 +54,21 @@ export class Tab1Page {
     });
   }
 
+  fetchAllInformations(event: any) {
+    fetch(`https://sebastien-thon.fr/prince/index.php?login=${this.loginData.username}&mdp=${this.loginData.password}`).then(async response => {
+      if (response.ok) {
+        const data = await response.json();
+        await Preferences.set({
+          key: 'data',
+          value: JSON.stringify(data),
+        })
+        event.target.complete()
+      }
+    }).catch(e => {
+      console.log(e);
+    })
+  }
+
   setOpen(isOpen: boolean, article: any) {
     this.isModalOpen = isOpen;
     this.currentArticle = article;
@@ -76,7 +91,7 @@ export class Tab1Page {
   async addFavorite(article: any) {
     const result = await Preferences.get({ key: 'favoris' });
     let tab = result.value ? JSON.parse(result.value) : [];
-  
+    console.log(tab)
     if (!tab.includes(article.id)) {
       tab.push(article.id);
       await Preferences.set({

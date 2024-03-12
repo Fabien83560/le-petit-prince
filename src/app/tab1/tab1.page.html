@@ -10,6 +10,10 @@
       <ion-title size="large">Articles</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-refresher slot="fixed" (ionRefresh)="fetchAllInformations($event)">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
   <ion-searchbar [(ngModel)]="searchQuery" (ionChange)="onSearchChange($event)" animated="true" placeholder="Rechercher"></ion-searchbar>
   <ion-list *ngIf="filteredArticles">
     <ion-item *ngFor="let article of filteredArticles" (click)="setOpen(true, article)">
