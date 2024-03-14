@@ -3,11 +3,11 @@
     <ion-title>
       Accueil
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="setOpenTutorial(true)">Tutoriel</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-buttons>
-  <ion-button (click)="setOpen(true)">Tutoriel</ion-button>
-</ion-buttons>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
@@ -15,6 +15,22 @@
       <ion-title size="large">Accueil</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-label *ngIf="countFavorites() == 0"><h1 style="text-align: center; margin: 5%;"> Aucun Articles Favoris</h1></ion-label>
+  <ion-label *ngIf="countFavorites() > 0"><h1 style="text-align: center; margin: 5%;">Articles Favoris</h1></ion-label>
+  <ion-list *ngIf="favoriteArticles">
+    <ion-item *ngFor="let article of  getFavoriteArticles()" (click)="setOpen(true, article)">
+        <ion-label>
+          <h2><b><u>{{ article.titre }}</u></b></h2>
+          <h3>Date: {{ article.date | date:'medium' }}</h3>
+          <h3>Category: {{ article.categorie }}</h3>
+          <h3 *ngIf="article.important" style="color: red;">IMPORTANT</h3>
+        </ion-label>
+        <h2>
+          <ion-icon name="star" [color]="article.isFavorite ? 'warning' : 'medium'"></ion-icon>
+        </h2>
+    </ion-item>
+  </ion-list>
+
 </ion-content>
 
 
@@ -40,8 +56,8 @@
             <ion-input type="password" [(ngModel)]="loginData.password" name="password" placeholder="password" required></ion-input>
           </ion-item>
           <ion-text color="danger" *ngIf="loginError" class="login-error-message">
-            <p>{{ loginErrorMessage }}</p>
-          </ion-text>          
+            <ion-alert>{{ loginErrorMessage }}</ion-alert>
+          </ion-text>
           <ion-item class="remember" lines="none">
             <ion-label>Se souvenir de moi</ion-label>
             <ion-checkbox slot="start" class="small-checkbox" (ionChange)="rememberMe()" [checked]="rememberLogin"></ion-checkbox>
@@ -62,7 +78,7 @@
       <ion-toolbar>
         <ion-title>Tutoriel</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="setOpen(false)">Close</ion-button>
+          <ion-button (click)="setOpenTutorial(false)">Close</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>

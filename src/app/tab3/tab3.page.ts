@@ -1,24 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { NgIf } from '@angular/common';
+import { NgIf, NgFor, NgForOf, DatePipe } from '@angular/common';
 import { Preferences } from '@capacitor/preferences';
+import { AlertController } from '@ionic/angular';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonModal, IonItem, IonLabel, IonInput, IonCheckbox,
-         IonButton, IonIcon, IonText, IonButtons } from '@ionic/angular/standalone';
+         IonButton, IonIcon, IonText, IonButtons, IonList, IonAlert } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { person, personSharp, personOutline, lockClosed, lockClosedSharp, lockClosedOutline } from 'ionicons/icons';
+import { person, personSharp, personOutline, lockClosed, lockClosedSharp, lockClosedOutline, star } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgIf, IonHeader, IonToolbar, IonTitle, IonContent, IonModal, IonItem, IonLabel, IonInput, IonCheckbox,
-            IonButton, IonIcon, IonText, IonButtons],
+  imports: [FormsModule, ReactiveFormsModule, NgIf, IonHeader, IonToolbar, IonTitle, IonContent, IonModal,
+            IonItem, IonLabel, IonInput, IonCheckbox, IonButton, IonIcon, IonText, IonButtons, IonList,
+            NgFor, NgForOf, DatePipe, IonAlert],
 })
 
 export class Tab3Page implements OnInit {
   userConnected: boolean = false;
   tutorialModal: boolean = false;
+
+  isModalOpen: boolean = false;
+  favoriteArticles: any;
+  currentArticle: any;
 
   loginError: boolean = false;
   loginErrorMessage: string = '';
@@ -29,8 +35,8 @@ export class Tab3Page implements OnInit {
     password: ''
   };
 
-  constructor() {
-    addIcons({ person, personSharp, personOutline, lockClosed, lockClosedSharp, lockClosedOutline });
+  constructor(private alertController: AlertController) {
+    addIcons({ person, personSharp, personOutline, lockClosed, lockClosedSharp, lockClosedOutline, star });
   }
 
   async ngOnInit() {
@@ -44,6 +50,14 @@ export class Tab3Page implements OnInit {
       this.loginData.username = storedUsername.value ? JSON.parse(storedUsername.value) : '';
       this.loginData.password = storedPassword.value ? JSON.parse(storedPassword.value) : '';
     }
+
+    this.refreshData();
+    this.refreshFavorite();
+  }
+
+  ionViewDidEnter() {
+    this.refreshData();
+    this.refreshFavorite();
   }
 
   async tryConnexion() {
@@ -85,12 +99,26 @@ export class Tab3Page implements OnInit {
       } else if (data.erreur) {
         this.loginError = true;
         this.loginErrorMessage = "Votre identifiant ou mot de passe est incorrect";
+        this.presentAlert();
       }
     } catch (error) {
       this.loginError = true;
       this.loginErrorMessage = "Une erreur est survenue lors de la connexion";
+      this.presentAlert();
     }
   }
+
+  async presentAlert() {
+    if (this.loginErrorMessage !== '') {
+      const alert = await this.alertController.create({
+        header: 'Erreur de connexion',
+        message: this.loginErrorMessage,
+        buttons: ['OK']
+      });
+      await alert.present();
+    }
+  }
+  
 
   async rememberMe() {
     this.rememberLogin = !this.rememberLogin;
@@ -108,6 +136,22 @@ export class Tab3Page implements OnInit {
     await Preferences.set({
       key: 'passwordConnected',
       value: JSON.stringify(this.loginData.password),
+    });
+  }
+
+  async refreshData() {
+    const dataResponse = await Preferences.get({ key: 'data' });
+    if (dataResponse.value) {
+      const data = JSON.parse(dataResponse.value);
+      this.favoriteArticles = data.articles;
+    }
+  }
+
+  async refreshFavorite() {
+    const result = await Preferences.get({ key: 'favoris' });
+    let favorites = result.value ? JSON.parse(result.value) : [];
+    this.favoriteArticles.forEach((article:any) => {
+      article.isFavorite = favorites.includes(article.id);
     });
   }
 
@@ -129,8 +173,25 @@ export class Tab3Page implements OnInit {
     return !this.userConnected;
   };
 
-  setOpen(isOpen: boolean) {
+  setOpenTutorial(isOpen: boolean) {
     this.tutorialModal = isOpen;
   }
 
+  setOpen(isOpen: boolean, article: any) {
+    this.isModalOpen = isOpen;
+    this.currentArticle = article;
+  }
+
+  getFavoriteArticles() {
+    return this.favoriteArticles.filter((article: any) => article.isFavorite);
+  }
+
+  countFavorites() {
+    if (!this.favoriteArticles) {
+      return 0;
+    }
+    const favorites = this.favoriteArticles.filter((article: any) => article.isFavorite);
+    return favorites.length;
+  }
+  
 }

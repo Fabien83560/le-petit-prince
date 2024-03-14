@@ -91,7 +91,6 @@ export class Tab1Page {
   async addFavorite(article: any) {
     const result = await Preferences.get({ key: 'favoris' });
     let tab = result.value ? JSON.parse(result.value) : [];
-    console.log(tab)
     if (!tab.includes(article.id)) {
       tab.push(article.id);
       await Preferences.set({
