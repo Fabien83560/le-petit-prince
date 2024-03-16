@@ -39,11 +39,9 @@
   --border-color-checked: var(--ion-color-primary);
 }
 
-
 .remember {
   --background: transparent;
 }
-
 
 ion-content {
   --background: none;
@@ -52,4 +50,86 @@ ion-content {
   background-repeat: no-repeat;
   background-position: right bottom
 }
+
+
+::ng-deep swiper-container {
+  display: block;
+  height: 40%;
+
+  swiper-pagination-bullet {
+    background: #fff;
+    opacity: 1;
+    width: 12px;
+    height: 12px;
+    &:hover {
+      background: #aaa;
+    }
+  }
+
+  swiper-pagination-bullet-active {
+    background: #000;
+  }
+
+  swiper-button-prev, swiper-button-next {
+    color: #000;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+    }
+  }
+}
+
+::ng-deep swiper-slide {
+  display: flex;
+
+  &:nth-child(1) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    text-align: center;
+  }
   
+  &:nth-child(2) {
+    background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+    text-align: center;
+    font-size: 1.2em;
+  }
+  &:nth-child(3) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+  &:nth-child(4) {
+    background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+  }
+  &:nth-child(5) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+  &:nth-child(6) {
+    background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+  }
+  &:nth-child(7) {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+  &:nth-child(8) {
+    background: linear-gradient(135deg, #5ee7df 0%, #b490ca 100%);
+    text-align: center;
+    font-size: 1.2em;
+  }
+}
+
+::ng-deep swiper-slide {
+  display: flex;
+  flex-direction: column; // Stack children vertically
+  align-items: center; // Center-align items horizontally
+  justify-content: flex-start; // Align items to the start of the container
+  text-align: center; // Center-align text for consistency
+  width: 100%; // Ensure slides take up the full width
+  padding: 20px; // Optional: add some padding inside each slide
+
+  img {
+    width: 60%; // Make image responsive
+    max-width: 600px; // Optional: limit image width for larger screens
+    margin-bottom: 20px; // Add some space between the image and the text
+  }
+}

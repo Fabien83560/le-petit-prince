@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { register } from 'swiper/element/bundle';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { NgIf, NgFor, NgForOf, DatePipe } from '@angular/common';
 import { Preferences } from '@capacitor/preferences';
@@ -8,6 +9,8 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonModal, IonItem, IonLabe
 import { addIcons } from 'ionicons';
 import { person, personSharp, personOutline, lockClosed, lockClosedSharp, lockClosedOutline, star } from 'ionicons/icons';
 
+register();
+
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
@@ -16,6 +19,7 @@ import { person, personSharp, personOutline, lockClosed, lockClosedSharp, lockCl
   imports: [FormsModule, ReactiveFormsModule, NgIf, IonHeader, IonToolbar, IonTitle, IonContent, IonModal,
             IonItem, IonLabel, IonInput, IonCheckbox, IonButton, IonIcon, IonText, IonButtons, IonList,
             NgFor, NgForOf, DatePipe, IonAlert],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
 export class Tab3Page implements OnInit {
